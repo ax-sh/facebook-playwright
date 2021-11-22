@@ -1,0 +1,33 @@
+name: playwright-typescript-ts-jest-jest-assert
+'on':
+  push: null
+  schedule:
+    - cron: 40 0 1-31/2 * *
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: 'install:linux:dep'
+        run: >
+          sudo apt-get update
+
+          sudo apt-get install libwoff1 libopus0 libwebp6 libwebpdemux2
+          libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0
+          libgdk-pixbuf2.0-0 libegl1 libgles2 libevent-dev libnotify4 libxslt1.1
+
+          sudo apt-get install xvfb
+      - name: 'npm:install'
+        run: npm install
+        env:
+          CI: true
+      - name: lint
+        run: npm run lint --if-present
+      - name: build
+        run: npm run build --if-present
+      - name: test
+        run: npm run test
